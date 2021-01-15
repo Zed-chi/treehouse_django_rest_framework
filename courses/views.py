@@ -1,3 +1,12 @@
-from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-# Create your views here.
+from . import models
+from . import serializers
+
+
+class ListCourse(APIView):
+    def get(self, req, format=None):
+        courses = models.Course.objects.all()
+        serializer = serializers.CourseSerializer(courses, many=True)
+        return Response(serializer.data)
