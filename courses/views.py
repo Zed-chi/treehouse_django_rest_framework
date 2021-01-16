@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from rest_framework import permissions
 from rest_framework import mixins
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -44,7 +45,17 @@ class ReviewDetail(generics.ListCreateAPIView):
             pk=self.kwargs.get("review_pk")
         )
 
+
+class IsSuperUser(permissions.BasePermission):
+    def has_permission(self, req, view):
+        if req.method == "DELETE" and req.user.is_superuser:
+            return True
+        return False
+
+
+
 class CourseViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsSuperUser,permissions.DjangoModelPermissions,)
     queryset = models.Course.objects.all()
     serializer_class = serializers.CourseSerializer
 
