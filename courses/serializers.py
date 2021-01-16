@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from rest_framework import serializers
 from . import models
 
@@ -13,17 +14,27 @@ class ReviewSerializer(serializers.ModelSerializer):
             "rating","created_at"
         )
         model=models.Review
+    def validate_rating(self, value):
+        if value in range(1,6):
+            return value
+        raise serializers.ValidationError("Raing out of span")
+
     
 class CourseSerializer(serializers.ModelSerializer):
     reviews = serializers.PrimaryKeyRelatedField(
         many=True, 
-        read_only=True,
-        
+        read_only=True,        
     )
+    average_rating = serializers.SerializerMethodField()
+    def get_average_rating(self, obj):
+        average = obj.reviews.aggregate(Avg("rating")).get("rating__avg")
+        if average is None:
+            return 0
+        return round(average*2)/2
 
     class Meta:
         fields = (
-            "id", "title","url", "reviews"
+            "id", "title","url", "reviews","average_rating"
         )
         model = models.Course
         
