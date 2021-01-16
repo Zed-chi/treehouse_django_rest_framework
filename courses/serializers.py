@@ -9,7 +9,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         }
         fields = (
             "id","course","name", "email",
-            "review",
+            "comment",
             "rating","created_at"
         )
         model=models.Review
