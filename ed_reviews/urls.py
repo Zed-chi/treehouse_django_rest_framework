@@ -15,6 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from rest_framework import routers
+
+from courses import views
+
+app_name = "ed_reviews"
+router = routers.SimpleRouter()
+router.register("courses", views.CourseViewSet)
+router.register("reviews", views.ReviewViewSet)
+
 
 urlpatterns = [
     url(r"^admin/", admin.site.urls),
@@ -22,5 +31,11 @@ urlpatterns = [
         "api/v1/courses/", 
         include("courses.urls", namespace="courses")
     ),
+    url(
+        "api/v2/", 
+        include(router.urls, #namespace="apiv2"
+        )
+    ),
     url(r"^api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    
 ]
