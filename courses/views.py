@@ -57,7 +57,11 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,    
+    viewsets.GenericViewSet):
     queryset = models.Review.objects.all()
     serializer_class = serializers.ReviewSerializer
